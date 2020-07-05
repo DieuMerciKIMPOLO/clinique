@@ -10,6 +10,10 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { useSelector } from 'react-redux'
+import { initSession } from '../../utils';
+import { useDispatch } from 'react-redux'
+import { registerUser } from '../../actions/users';
 
 function Copyright() {
   return (
@@ -52,13 +56,24 @@ const initState={
 export default function SignUp() {
   const classes = useStyles();
   const [state, setState]=useState(initState)
+  const users = useSelector(state =>{
+   return {
+            register: state.users.register_user,
+            instance: state.users.notAuth
+          }
+  })
+  const dispatch = useDispatch()
+
   const handleChanges=(field, e)=>{
       setState({...state, [field]:e.target.value})
   }
   const handleSubmit=(event)=>{
      event.preventDefault();
-     console.log(state)
+     registerUser('api/auth/signup','REGISTER_USER',state,dispatch,users.instance)
   }
+  useEffect(()=>{
+    initSession(dispatch);
+  },[dispatch])
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -71,6 +86,9 @@ export default function SignUp() {
         </Typography>
         <form className={classes.form} onSubmit={handleSubmit}>
           <Grid container spacing={2}>
+            <Grid item xs={12} sm={12}>
+                 {users.message?users.message:null}
+            </Grid>
             <Grid item xs={12} sm={12}>
               <TextField
                 name="username"
