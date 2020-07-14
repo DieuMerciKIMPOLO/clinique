@@ -1,7 +1,8 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 import axios from 'axios'
 import { BASE_URL } from './config';
-// import { useDispatch } from 'react-redux'
+
+
 
 export const theme = createMuiTheme({
   palette: {
@@ -20,12 +21,12 @@ const authenticated=(token)=>{
     instance = axios.create({
         baseURL:`${BASE_URL}`,
         headers: {
-            'Authorization': token,
+            'Authorization':`Bearer ${token}`,
             'Content-Type': 'application/json',
             'Accept': 'application/json',
         }
     })
-    return (dispatch, getState)=>{
+    return (dispatch)=>{
         dispatch({type:"INIT_AXIOS_AUTH", payload:instance})
     }
 }
@@ -39,26 +40,30 @@ instance = axios.create({
         'Accept': 'application/json',
     }
 })   
-console.log("dispatch",instance)
 return dispatch({type:"INIT_AXIOS_NOT_AUTH", payload:instance})
    
 }
-function detectInit(dispatch){
-  // const  = useDispatch()
-  return dispatch({type:"DETECT_INIT", payload:"GDLTE"})
-}
+
 export const initSession=(dispatch)=>{
-  detectInit(dispatch);
   if(localStorage.getItem("Token")){
-      authenticated(localStorage.getState("Token"));
+      authenticated(localStorage.getItem("Token"));
       notAuthenticated(dispatch)
   }else{
     notAuthenticated(dispatch)
   }
 
 }
-export const login=(Token, Refresh)=>{
-  localStorage.setItem("Token",Token);
-  localStorage.setItem("Refresh",Refresh);
-  initSession();
+export const login=(data,dispatch)=>{
+  
+  localStorage.setItem("accessToken",data.accessToken);
+  localStorage.setItem("refreshToken",data.refreshToken);
+  localStorage.setItem("roles", data.roles)
+  dispatch({type:"AUTHENTICATE", payload:{accessToken:data.accessToken,refreshToken:data.refreshToken, roles:data.roles}});
+  dispatch({type:"SIGNIN", payload:{accessToken:data.accessToken,refreshToken:data.refreshToken,roles:data.roles,username:data.username,
+                                    email:data.email,
+                                    id:data.id
+                                  }})
+  initSession(dispatch);
+  console.log("LOGIN")
 }
+

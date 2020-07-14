@@ -11,22 +11,14 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useSelector } from 'react-redux'
-import { initSession } from '../../utils';
+import { login, initSession } from '../../utils';
 import { useDispatch } from 'react-redux'
 import { registerUser } from '../../actions/users';
+import Alert from '@material-ui/lab/Alert';
+import Copyright from '../Copyright';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://www.clinique.cg">
-        Clinique
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -56,24 +48,23 @@ const initState={
 export default function SignUp() {
   const classes = useStyles();
   const [state, setState]=useState(initState)
-  const users = useSelector(state =>{
-   return {
-            register: state.users.register_user,
-            instance: state.users.notAuth
-          }
-  })
+  const users = useSelector(state =>state.users);
+  const signup = useSelector(state =>state.signup.signup);
   const dispatch = useDispatch()
 
-  const handleChanges=(field, e)=>{
-      setState({...state, [field]:e.target.value})
+  const handleChanges=(e)=>{
+      setState({...state, [e.target.name]:e.target.value})
   }
   const handleSubmit=(event)=>{
      event.preventDefault();
-     registerUser('api/auth/signup','REGISTER_USER',state,dispatch,users.instance)
+     registerUser('api/auth/signup','SIGNUP',state,dispatch,users.notAuth)
   }
   useEffect(()=>{
-    initSession(dispatch);
-  },[dispatch])
+    initSession(dispatch)
+    if(signup.message){
+      setState(initState);
+    }
+  },[dispatch,state])
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -87,7 +78,8 @@ export default function SignUp() {
         <form className={classes.form} onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12}>
-                 {users.message?users.message:null}
+            {signup.message?<Alert severity="success" onClose={()=>dispatch({type:"REMOVE_SIGNUP_MESSAGES"})}>{signup.message}</Alert>:null}
+            {signup.error?<Alert severity="error" onClose={()=>dispatch({type:"REMOVE_SIGNUP_MESSAGES"})}>{signup.error}</Alert>:null}
             </Grid>
             <Grid item xs={12} sm={12}>
               <TextField
@@ -99,7 +91,7 @@ export default function SignUp() {
                 label="Le nom d'utilisateur"
                 autoFocus
                 value={state.username}
-                onChange={(e)=>{handleChanges('username',e)}}
+                onChange={handleChanges}
               />
             </Grid>
             <Grid item xs={12}>
@@ -112,7 +104,7 @@ export default function SignUp() {
                 name="email"
                 autoComplete="email"
                 value={state.email}
-                onChange={(e)=>{handleChanges('email',e)}}
+                onChange={handleChanges}
               />
             </Grid>
             <Grid item xs={12}>
@@ -126,11 +118,12 @@ export default function SignUp() {
                 id="password"
                 autoComplete="current-password"
                 value={state.password}
-                onChange={(e)=>{handleChanges('password',e)}}
+                onChange={handleChanges}
               />
             </Grid>
           </Grid>
-          <Button
+          {!signup.spinner?
+            <Button
             type="submit"
             fullWidth
             variant="contained"
@@ -138,8 +131,8 @@ export default function SignUp() {
             className={classes.submit}
           >
             S'enregistrer
-          </Button>
-          <Grid container justify="flex-end">
+          </Button>:<CircularProgress color="inherit" />}
+          <Grid container justify="center">
             <Grid item>
               <Link href="/signin" variant="body2">
                 J'ai deja un compte

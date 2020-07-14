@@ -5,6 +5,7 @@ import {
   Route} from "react-router-dom";
 import SignUp from "./components/users/Signup";
 import SignIn from "./components/users/Signin";
+import Dashboard from "./components/dashboard";
 
 export function Routes() {
   return (
@@ -12,6 +13,7 @@ export function Routes() {
         <Switch>
           <Route path="/" exact component={SignUp}/>
           <Route path="/signin" component={SignIn}/>
+          <Route path="/dashboard" component={Dashboard}/>
         </Switch>
     </Router>
   );
