@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useSelector } from 'react-redux'
-import { login, initSession } from '../../utils';
+import {initSession } from '../../utils';
 import { useDispatch } from 'react-redux'
 import { registerUser } from '../../actions/users';
 import Alert from '@material-ui/lab/Alert';
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: '100%', // Fix IE 11 issue.
+    width: '100%',
     marginTop: theme.spacing(3),
   },
   submit: {
@@ -57,14 +57,11 @@ export default function SignUp() {
   }
   const handleSubmit=(event)=>{
      event.preventDefault();
-     registerUser('api/auth/signup','SIGNUP',state,dispatch,users.notAuth)
+     dispatch(registerUser('api/auth/signup','SIGNUP',state))
   }
   useEffect(()=>{
-    initSession(dispatch)
-    if(signup.message){
-      setState(initState);
-    }
-  },[dispatch,state])
+    dispatch(initSession())
+  },[dispatch])
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />

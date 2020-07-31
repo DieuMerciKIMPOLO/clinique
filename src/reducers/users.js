@@ -17,13 +17,6 @@ const users = (state=initstate, action) => {
                    refreshToken:action.payload.refreshToken, roles:action.payload.roles
                }
            }
-    //    case "LOGOUT":
-    //         return{
-    //             ...state, user_credentials:{
-    //                 ...state.user_credentials, accessToken:null,
-    //                 refreshToken:null, roles:[]
-    //             }
-    //         }
        case "INIT_AXIOS_AUTH":
            return{
                ...state, auth:action.payload

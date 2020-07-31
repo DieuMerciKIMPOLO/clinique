@@ -16,7 +16,6 @@ const initstate={
    const signin = (state=initstate, action) => {
        switch (action.type) {
            case "SIGNIN":
-            //    console.log("+++++=+++++",action.payload)
                return{
                    ...state, signin:{
                        ...state.signin, accessToken:action.payload.accessToken, error:null, spinner:false,

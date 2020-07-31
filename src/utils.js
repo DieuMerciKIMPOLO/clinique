@@ -16,54 +16,58 @@ export const theme = createMuiTheme({
 });
 
 
-const authenticated=(token)=>{
-    let instance;
-    instance = axios.create({
+
+export function  initSession(){
+  let instanceConnected;
+  let instanceNotConnected;
+  return (dispatch, getState)=>{
+    if(localStorage.getItem("Token")){
+        instanceNotConnected = axios.create({
+          baseURL:`${BASE_URL}`,
+          headers: {
+              timeout: 1000,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+          }
+        });
+        instanceConnected = axios.create({
+          baseURL:`${BASE_URL}`,
+          headers: {
+              'Authorization':`Bearer ${localStorage.getItem("Token")}`,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+          }
+        }) 
+        dispatch({type:"INIT_AXIOS_AUTH", payload:instanceConnected})
+        dispatch({type:"INIT_AXIOS_NOT_AUTH", payload:instanceNotConnected})
+    }else{
+      instanceNotConnected = axios.create({
         baseURL:`${BASE_URL}`,
         headers: {
-            'Authorization':`Bearer ${token}`,
+            timeout: 1000,
             'Content-Type': 'application/json',
             'Accept': 'application/json',
         }
-    })
-    return (dispatch)=>{
-        dispatch({type:"INIT_AXIOS_AUTH", payload:instance})
+      });
+      dispatch({type:"INIT_AXIOS_NOT_AUTH", payload:instanceNotConnected})
     }
-}
-const notAuthenticated=(dispatch)=>{
-let instance;
-instance = axios.create({
-    baseURL:`${BASE_URL}`,
-    headers: {
-         timeout: 1000,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-    }
-})   
-return dispatch({type:"INIT_AXIOS_NOT_AUTH", payload:instance})
-   
-}
-
-export const initSession=(dispatch)=>{
-  if(localStorage.getItem("Token")){
-      authenticated(localStorage.getItem("Token"));
-      notAuthenticated(dispatch)
-  }else{
-    notAuthenticated(dispatch)
   }
-
 }
-export const login=(data,dispatch)=>{
-  
-  localStorage.setItem("accessToken",data.accessToken);
-  localStorage.setItem("refreshToken",data.refreshToken);
-  localStorage.setItem("roles", data.roles)
-  dispatch({type:"AUTHENTICATE", payload:{accessToken:data.accessToken,refreshToken:data.refreshToken, roles:data.roles}});
-  dispatch({type:"SIGNIN", payload:{accessToken:data.accessToken,refreshToken:data.refreshToken,roles:data.roles,username:data.username,
-                                    email:data.email,
-                                    id:data.id
-                                  }})
-  initSession(dispatch);
-  console.log("LOGIN")
+
+
+export function login(data){
+  return (dispatch, getState)=>{
+
+    localStorage.setItem("accessToken",data.accessToken);
+    localStorage.setItem("refreshToken",data.refreshToken);
+    localStorage.setItem("roles", data.roles)
+    dispatch({type:"AUTHENTICATE", payload:{accessToken:data.accessToken,refreshToken:data.refreshToken, roles:data.roles}});
+    dispatch({type:"SIGNIN", payload:{accessToken:data.accessToken,refreshToken:data.refreshToken,roles:data.roles,username:data.username,
+                                      email:data.email,
+                                      id:data.id
+                                    }})
+    initSession();
+    console.log("LOGIN")
+  }
 }
 
