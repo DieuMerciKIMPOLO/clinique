@@ -63,7 +63,10 @@ export default function SignIn() {
   }
   useEffect(()=>{
     dispatch(initSession());
-  },[dispatch]);
+    if(localStorage.getItem('accessToken')){
+      window.location="/dashboard"
+    }
+  },[dispatch,localStorage.getItem('accessToken')]);
 
 
   return (

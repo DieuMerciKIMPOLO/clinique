@@ -21,7 +21,7 @@ export function  initSession(){
   let instanceConnected;
   let instanceNotConnected;
   return (dispatch, getState)=>{
-    if(localStorage.getItem("Token")){
+    if(localStorage.getItem("accessToken")){
         instanceNotConnected = axios.create({
           baseURL:`${BASE_URL}`,
           headers: {
@@ -33,7 +33,7 @@ export function  initSession(){
         instanceConnected = axios.create({
           baseURL:`${BASE_URL}`,
           headers: {
-              'Authorization':`Bearer ${localStorage.getItem("Token")}`,
+              'Authorization':`Bearer ${localStorage.getItem("accessToken")}`,
               'Content-Type': 'application/json',
               'Accept': 'application/json',
           }
@@ -54,6 +54,18 @@ export function  initSession(){
   }
 }
 
+export function handleLogout(){
+
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("username");
+  localStorage.removeItem("id");
+  localStorage.removeItem("refreshToken")
+  localStorage.removeItem("roles");
+  localStorage.removeItem("email");
+  localStorage.removeItem("id");
+  localStorage.removeItem("username")
+  window.location="/signin"
+}
 
 export function login(data){
   return (dispatch, getState)=>{

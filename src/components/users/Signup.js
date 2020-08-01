@@ -61,7 +61,10 @@ export default function SignUp() {
   }
   useEffect(()=>{
     dispatch(initSession())
-  },[dispatch])
+    if(localStorage.getItem('accessToken')){
+      window.location="/dashboard"
+    }
+  },[dispatch,localStorage.getItem('accessToken')])
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
