@@ -15,12 +15,15 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import { mainListItems, secondaryListItems } from './listItems';
+import { MainListItems, secondaryListItems } from './listItems';
+import {useSelector} from 'react-redux'
+
 import Chart from './Chart';
 import Deposits from './Deposits';
 import Orders from './Orders';
 import Copyright from '../Copyright';
 import ProfileMenu from './ProfileMenu';
+import {DashboadRouters} from './routes/DashboadRouters'
 
 
 const drawerWidth = 240;
@@ -104,9 +107,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Dashboard() {
+export default function Dashboard(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
+  const roles = useSelector(state=>state.signin.signin.roles)
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -114,7 +118,8 @@ export default function Dashboard() {
     setOpen(false);
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-
+  console.log("props", props)
+  console.log("props", props.children)
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -148,32 +153,37 @@ export default function Dashboard() {
           </IconButton>
         </div>
         <Divider />
-        <List>{mainListItems}</List>
+        <List><MainListItems roles={roles}/></List>
         <Divider />
-        <List>{secondaryListItems}</List>
+        {/* <List>{secondaryListItems}</List> */}
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
             {/* Chart */}
-            <Grid item xs={12} md={8} lg={9}>
+            {/* <Grid item xs={12} md={8} lg={9}>
               <Paper className={fixedHeightPaper}>
                 <Chart />
               </Paper>
-            </Grid>
+            </Grid> */}
             {/* Recent Deposits */}
-            <Grid item xs={12} md={4} lg={3}>
+            {/* <Grid item xs={12} md={4} lg={3}>
               <Paper className={fixedHeightPaper}>
                 <Deposits />
               </Paper>
-            </Grid>
+            </Grid> */}
             {/* Recent Orders */}
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Paper className={classes.paper}>
                 <Orders />
               </Paper>
-            </Grid>
+            </Grid> */}
+          <Grid item xs={12}>
+            <React.Fragment>
+              <DashboadRouters/>
+            </React.Fragment>            
+          </Grid>
           </Grid>
           <Box pt={4}>
             <Copyright />

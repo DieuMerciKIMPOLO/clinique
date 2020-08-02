@@ -9,44 +9,84 @@ import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import LayersIcon from '@material-ui/icons/Layers';
 import AssignmentIcon from '@material-ui/icons/Assignment';
-export const mainListItems = (
+import { Link } from 'react-router-dom';
+export const MainListItems = (props)=>{
+  const useris={
+    admin:props.roles.indexOf('ROLE_ADMIN')!== -1,
+    medecin:props.roles.indexOf('ROLE_MEDECINS')!== -1,
+    manager:props.roles.indexOf('ROLE_MANAGER')!== -1,
+    gest   :props.roles.indexOf('ROLE_GESTIONNAIRE')!== -1
+  };
+  
+  return(
   <div>
-    <ListItem button>
+    <Link to="/dashboard/all">
+      <ListItem button>
       <ListItemIcon>
         <DashboardIcon />
       </ListItemIcon>
-      <ListItemText primary="Dashboard" />
-    </ListItem>
+      <ListItemText primary="All" />
+    </ListItem>  
+    </Link>
+
+    {useris.admin? 
+    <Link to="/dashboard/users">
     <ListItem button>
       <ListItemIcon>
         <ShoppingCartIcon />
       </ListItemIcon>
-      <ListItemText primary="Orders" />
-    </ListItem>
-    <ListItem button>
+      <ListItemText primary="Users" />
+    </ListItem>      
+    </Link>   
+    :null}
+    {useris.medecin || useris.admin?
+      <Link to="/dashboard/medecins">
+      <ListItem button>
       <ListItemIcon>
         <PeopleIcon />
       </ListItemIcon>
-      <ListItemText primary="Customers" />
-    </ListItem>
-    <ListItem button>
+      <ListItemText primary="Medecins" />
+    </ListItem>        
+      </Link>
+    :null}
+    {useris.admin || useris.manager?
+    <Link to="/dashboard/manager">
+     <ListItem button>
       <ListItemIcon>
         <BarChartIcon />
       </ListItemIcon>
-      <ListItemText primary="Reports" />
+      <ListItemText primary="Manager" />
     </ListItem>
+    </Link>
+    :null}
+    {useris.admin ||  useris.gest?
+      <Link to="/dashboard/gestionnaire">
+      <ListItem button>
+      <ListItemIcon>
+        <LayersIcon />
+      </ListItemIcon>
+      <ListItemText primary="Gestionnaire" />
+    </ListItem>
+      </Link>
+    :null}
+    {useris.admin?
+    <Link to="/dashboard/admin">
     <ListItem button>
       <ListItemIcon>
         <LayersIcon />
       </ListItemIcon>
-      <ListItemText primary="Integrations" />
+      <ListItemText primary="Admin" />
     </ListItem>
-  </div>
-);
+    </Link>
+    :null}
+  </div>    
+  )
+}
+
 
 export const secondaryListItems = (
   <div>
-    <ListSubheader inset>Saved reports</ListSubheader>
+    <ListSubheader inset>Addition</ListSubheader>
     <ListItem button>
       <ListItemIcon>
         <AssignmentIcon />

@@ -6,7 +6,9 @@ import {
 import SignUp from "./components/users/Signup";
 import SignIn from "./components/users/Signin";
 import Dashboard from "./components/dashboard";
-
+/**
+ * Doc. https://stackoverflow.com/questions/41474134/nested-routes-with-react-router-v4-v5
+ */
 export function Routes() {
   return (
     <Router>

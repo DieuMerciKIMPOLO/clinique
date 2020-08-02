@@ -40,6 +40,14 @@ export function  initSession(){
         }) 
         dispatch({type:"INIT_AXIOS_AUTH", payload:instanceConnected})
         dispatch({type:"INIT_AXIOS_NOT_AUTH", payload:instanceNotConnected})
+        dispatch({type:"SIGNIN", payload:{
+              accessToken: localStorage.getItem("accessToken"),
+              refreshToken:localStorage.getItem("refreshToken"), 
+              roles:       localStorage.getItem("roles"),
+              email:       localStorage.getItem("email"),
+              username:    localStorage.getItem("username"),
+              id      :    localStorage.getItem("id")
+            }});
     }else{
       instanceNotConnected = axios.create({
         baseURL:`${BASE_URL}`,
@@ -67,19 +75,4 @@ export function handleLogout(){
   window.location="/signin"
 }
 
-export function login(data){
-  return (dispatch, getState)=>{
-
-    localStorage.setItem("accessToken",data.accessToken);
-    localStorage.setItem("refreshToken",data.refreshToken);
-    localStorage.setItem("roles", data.roles)
-    dispatch({type:"AUTHENTICATE", payload:{accessToken:data.accessToken,refreshToken:data.refreshToken, roles:data.roles}});
-    dispatch({type:"SIGNIN", payload:{accessToken:data.accessToken,refreshToken:data.refreshToken,roles:data.roles,username:data.username,
-                                      email:data.email,
-                                      id:data.id
-                                    }})
-    initSession();
-    console.log("LOGIN")
-  }
-}
 
